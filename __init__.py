@@ -15,8 +15,8 @@ def get_google_addresses():
     return ips
 
 
-def update_access_policy(token, account_id, group_id, ips):
-    log.info("Updating Cloudflare Policy with IPs: %s" % ips)
+def update_access_group(token, account_id, group_id, ips):
+    log.info("Updating Cloudflare Access Group with IPs: %s" % ips)
     client = CloudFlare.CloudFlare(token=token)
 
     data = {"include": [{"ip": {"ip": ip}} for ip in ips], "exclude": [], "require": []}
@@ -33,9 +33,9 @@ def update_access_policy(token, account_id, group_id, ips):
 
 @service
 def cloudflare_access_group_google_ip_updater():
-    log.info("Updating Cloudflare Policy for Google IPs...")
+    log.info("Running Cloudflare Access Group updater for Google IPs...")
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    policy = pyscript.app_config[0].get("policy")
+    group = pyscript.app_config[0].get("group")
     ips = get_google_addresses()
-    update_access_policy(token, account, policy, ips)
+    update_access_group(token, account, group, ips)
