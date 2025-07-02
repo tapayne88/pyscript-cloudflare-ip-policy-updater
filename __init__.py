@@ -39,21 +39,22 @@ def update_access_group(token, account_id, group_id, ips):
 
 
 @service
-def cloudflare_access_group_ip_updater():
+def cloudflare_access_group_google_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    group = pyscript.app_config[0].get("group")
-    mode = pyscript.app_config[0].get("mode")
+    group = pyscript.app_config[0].get("google_group")
 
-    if mode == "home":
-        log.info("Running Cloudflare Access Group updater for Home IP...")
-        ips = get_home_address()
-        update_access_group(token, account, group, ips)
+    log.info("Running Cloudflare Access Group updater for Google IPs...")
+    ips = get_google_addresses()
+    update_access_group(token, account, group, ips)
 
-    elif mode == "google":
-        log.info("Running Cloudflare Access Group updater for Google IPs...")
-        ips = get_google_addresses()
-        update_access_group(token, account, group, ips)
 
-    else:
-        log.warn("Unrecognised mode, aborting: %s" % mode)
+@service
+def cloudflare_access_group_home_ip_updater():
+    token = pyscript.app_config[0].get("token")
+    account = pyscript.app_config[0].get("account")
+    group = pyscript.app_config[0].get("home_group")
+
+    log.info("Running Cloudflare Access Group updater for Home IP...")
+    ips = get_home_address()
+    update_access_group(token, account, group, ips)
