@@ -29,7 +29,7 @@ def update_access_group(token, account_id, group_id, ips):
     data = {"include": [{"ip": {"ip": ip}} for ip in ips], "exclude": [], "require": []}
 
     task.executor(client.accounts.access.groups.put, account_id, group_id, data=data)
-    log.info("Successfully updated Google IP group")
+    log.info("Successfully updated the IP group")
     log.info(
         "Result",
         task.executor(
@@ -39,9 +39,7 @@ def update_access_group(token, account_id, group_id, ips):
 
 
 @service
-def cloudflare_access_group_google_ip_updater():
-    log.info("Running Cloudflare Access Group updater for Google IPs...")
-
+def cloudflare_access_group_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
     group = pyscript.app_config[0].get("group")
