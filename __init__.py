@@ -2,6 +2,13 @@ import CloudFlare
 import requests
 
 
+def get_home_address():
+    log.info("Fetching home IP address")
+    r = task.executor(requests.get, "https://api.ipify.org?format=json")
+    r.raise_for_status()
+    return [r.json()["ip"]]
+
+
 def get_google_addresses():
     log.info("Fetching Google IP addresses")
     r = task.executor(requests.get, "https://www.gstatic.com/ipranges/goog.json")
@@ -34,8 +41,21 @@ def update_access_group(token, account_id, group_id, ips):
 @service
 def cloudflare_access_group_google_ip_updater():
     log.info("Running Cloudflare Access Group updater for Google IPs...")
+
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
     group = pyscript.app_config[0].get("group")
-    ips = get_google_addresses()
-    update_access_group(token, account, group, ips)
+    mode = pyscript.app_config[0].get("mode")
+
+    if mode == "home":
+        log.info("Running Cloudflare Access Group updater for Home IP...")
+        ips = get_home_address()
+        update_access_group(token, account, group, ips)
+
+    elif mode == "google":
+        log.info("Running Cloudflare Access Group updater for Google IPs...")
+        ips = get_google_addresses()
+        update_access_group(token, account, group, ips)
+
+    else:
+        log.warn("Unrecognised mode, aborting: %s" % mode)
