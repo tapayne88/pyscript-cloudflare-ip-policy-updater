@@ -17,16 +17,25 @@ pyscript: !include pyscript/config.yaml
 ```yaml
 allow_all_imports: true
 apps:
-  cloudflare-access-group-google-ip-updater:
+  pyscript-cloudflare-ip-policy-updater:
     - account: !secret cloudflare_account_id
       token: !secret cloudflare_token
-      group: !secret cloudflare_google_group_id
+      google_policy: !secret cloudflare_google_policy_id
+      home_policy: !secret cloudflare_home_policy_id
 ```
 
 ### `secrets.yaml`
 
 ```yaml
 cloudflare_account_id: <cloudflare_account_id>
-cloudflare_token: <cloudflare_token>
-cloudflare_google_group_id: <cloudflare_google_group_id>
+cloudflare_policy_token: <cloudflare_policy_token>
+cloudflare_google_policy_id: <cloudflare_google_policy_id>
+cloudflare_home_policy_id: <cloudflare_home_policy_id>
 ```
+
+## Token
+
+To generate the `<cloudflare_policy_token>` you need to visit [Cloudflare](https://dash.cloudflare.com/profile/api-tokens) and create a token. The token needs the following policies
+
+- Account.Access: Apps and Policies:Edit
+- Account.Access: Apps and Policies:Read
