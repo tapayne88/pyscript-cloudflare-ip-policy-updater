@@ -24,7 +24,7 @@ def get_google_addresses():
 
 def update_access_policy(token, account_id, app_id, policy_id, ips):
     log.info(f"Updating Cloudflare Access Policy with IPs: {ips}")
-    client = Cloudflare(token=token)
+    client = Cloudflare(api_token=token)
     # Fetch the current policy
     policy = task.executor(
         client.accounts.access.apps.policies.get, account_id, app_id, policy_id
