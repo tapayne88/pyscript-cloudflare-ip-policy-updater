@@ -43,7 +43,7 @@ def update_access_policy(token, account_id, app_id, policy_id, ips):
 def cloudflare_access_policy_google_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    app = pyscript.app_config[0].get("google_app")
+    app = pyscript.app_config[0].get("app")
     policy = pyscript.app_config[0].get("google_policy")
     log.info("Running Cloudflare Access Policy updater for Google IPs...")
     ips = get_google_addresses()
@@ -54,7 +54,7 @@ def cloudflare_access_policy_google_ip_updater():
 def cloudflare_access_policy_home_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    app = pyscript.app_config[0].get("home_app")
+    app = pyscript.app_config[0].get("app")
     policy = pyscript.app_config[0].get("home_policy")
     log.info("Running Cloudflare Access Policy updater for Home IP...")
     ips = get_home_address()
