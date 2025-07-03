@@ -22,39 +22,40 @@ def get_google_addresses():
     return ips
 
 
-def update_access_group(token, account_id, group_id, ips):
-    log.info("Updating Cloudflare Access Group with IPs: %s" % ips)
-    client = CloudFlare.CloudFlare(token=token)
-
-    data = {"include": [{"ip": {"ip": ip}} for ip in ips], "exclude": [], "require": []}
-
-    task.executor(client.accounts.access.groups.put, account_id, group_id, data=data)
-    log.info("Successfully updated the IP group")
-    log.info(
-        "Result",
-        task.executor(
-            client.accounts.access.groups.get, account_id, group_id, data=data
-        ),
+def update_access_policy(token, account_id, app_id, policy_id, ips):
+    log.info(f"Updating Cloudflare Access Policy with IPs: {ips}")
+    cf = CloudFlare.CloudFlare(token=token)
+    # Fetch the current policy
+    policy = task.executor(
+        cf.accounts.access.apps.policies.get, account_id, app_id, policy_id
     )
+    # Update the include list
+    policy["include"] = [{"ip": {"ip": ip}} for ip in ips]
+    # Update the policy
+    result = task.executor(
+        cf.accounts.access.apps.policies.put, account_id, app_id, policy_id, data=policy
+    )
+    log.info("Successfully updated the IP policy")
+    log.info("Result: %s", result)
 
 
 @service
-def cloudflare_access_group_google_ip_updater():
+def cloudflare_access_policy_google_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    group = pyscript.app_config[0].get("google_group")
-
-    log.info("Running Cloudflare Access Group updater for Google IPs...")
+    app = pyscript.app_config[0].get("google_app")
+    policy = pyscript.app_config[0].get("google_policy")
+    log.info("Running Cloudflare Access Policy updater for Google IPs...")
     ips = get_google_addresses()
-    update_access_group(token, account, group, ips)
+    update_access_policy(token, account, app, policy, ips)
 
 
 @service
-def cloudflare_access_group_home_ip_updater():
+def cloudflare_access_policy_home_ip_updater():
     token = pyscript.app_config[0].get("token")
     account = pyscript.app_config[0].get("account")
-    group = pyscript.app_config[0].get("home_group")
-
-    log.info("Running Cloudflare Access Group updater for Home IP...")
+    app = pyscript.app_config[0].get("home_app")
+    policy = pyscript.app_config[0].get("home_policy")
+    log.info("Running Cloudflare Access Policy updater for Home IP...")
     ips = get_home_address()
-    update_access_group(token, account, group, ips)
+    update_access_policy(token, account, app, policy, ips)
