@@ -25,11 +25,15 @@ def get_google_addresses():
 def update_access_policy(token, account_id, policy_id, ips):
     log.info(f"Updating Cloudflare Access Policy with IPs: {ips}")
     client = Cloudflare(api_token=token)
+    # Fetch the current policy
+    policy = task.executor(
+        client.zero_trust.access.policies.get, policy_id, account_id=account_id
+    )
     # Update the include list
     include = [{"ip": {"ip": ip}} for ip in ips]
     # Update the policy
     result = task.executor(
-        client.zero_trust.access.policies.update, policy_id, account_id=account_id, include=include
+        client.zero_trust.access.policies.update, policy_id, account_id=account_id, include=include, name=policy["name"], decision=policy["decision"]
     )
     log.info("Successfully updated the IP policy")
     log.info("Result: %s", result)
