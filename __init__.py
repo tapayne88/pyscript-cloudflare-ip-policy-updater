@@ -27,17 +27,13 @@ def update_access_policy(token, account_id, app_id, policy_id, ips):
     client = Cloudflare(api_token=token)
     # Fetch the current policy
     policy = task.executor(
-        client.accounts.access.apps.policies.get, account_id, app_id, policy_id
+        client.zero_trust.access.policies.get, policy_id, account_id
     )
     # Update the include list
     policy["include"] = [{"ip": {"ip": ip}} for ip in ips]
     # Update the policy
     result = task.executor(
-        client.accounts.access.apps.policies.put,
-        account_id,
-        app_id,
-        policy_id,
-        data=policy,
+        client.zero_trust.access.policies.update, policy_id, account_id, policy
     )
     log.info("Successfully updated the IP policy")
     log.info("Result: %s", result)
