@@ -2,7 +2,7 @@
 
 These scripts are to automate the updating of Cloudflare Access Groups which can be used to secure external access to Home Assistant via Cloudflare's Zero Trust network.
 
-This script currently supports updating a group which contains Google's IP ranges so Google Home can talk to Home Assistant.
+This script currently supports updating 2 policies. First is a policy which allows Google's IP ranges to bypass auth allowing Google Home to talk to Home Assistant. The second is to allow the same auth bypass but for my home IP address.
 
 ## Installation
 
