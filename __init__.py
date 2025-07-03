@@ -33,7 +33,11 @@ def update_access_policy(token, account_id, app_id, policy_id, ips):
     policy["include"] = [{"ip": {"ip": ip}} for ip in ips]
     # Update the policy
     result = task.executor(
-        client.accounts.access.apps.policies.put, account_id, app_id, policy_id, data=policy
+        client.accounts.access.apps.policies.put,
+        account_id,
+        app_id,
+        policy_id,
+        data=policy,
     )
     log.info("Successfully updated the IP policy")
     log.info("Result: %s", result)
