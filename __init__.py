@@ -33,7 +33,7 @@ def update_access_policy(token, account_id, policy_id, ips):
     include = [{"ip": {"ip": ip}} for ip in ips]
     # Update the policy
     result = task.executor(
-        client.zero_trust.access.policies.update, policy_id, account_id=account_id, include=include, name=policy["name"], decision=policy["decision"]
+        client.zero_trust.access.policies.update, policy_id, account_id=account_id, include=include, name=policy.name, decision=policy.decision
     )
     log.info("Successfully updated the IP policy")
     log.info("Result: %s", result)
