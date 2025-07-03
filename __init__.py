@@ -1,4 +1,4 @@
-import CloudFlare
+from cloudflare import Cloudflare
 import requests
 
 
@@ -24,16 +24,16 @@ def get_google_addresses():
 
 def update_access_policy(token, account_id, app_id, policy_id, ips):
     log.info(f"Updating Cloudflare Access Policy with IPs: {ips}")
-    cf = CloudFlare.CloudFlare(token=token)
+    client = Cloudflare(token=token)
     # Fetch the current policy
     policy = task.executor(
-        cf.accounts.access.apps.policies.get, account_id, app_id, policy_id
+        client.accounts.access.apps.policies.get, account_id, app_id, policy_id
     )
     # Update the include list
     policy["include"] = [{"ip": {"ip": ip}} for ip in ips]
     # Update the policy
     result = task.executor(
-        cf.accounts.access.apps.policies.put, account_id, app_id, policy_id, data=policy
+        client.accounts.access.apps.policies.put, account_id, app_id, policy_id, data=policy
     )
     log.info("Successfully updated the IP policy")
     log.info("Result: %s", result)
